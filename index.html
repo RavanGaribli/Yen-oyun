@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>EngPlay — İngilis oyunu</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="app">
+  <header>
+    <h1>EngPlay</h1>
+    <div>Bal: <span id="score">0</span></div>
+  </header>
+
+  <div class="row">
+    <div class="card">
+      <div class="big" id="word"></div>
+      <div class="small">Tərcüməni yaz</div>
+
+      <input type="text" id="answer" placeholder="Cavab yaz..." />
+      <button onclick="check()">Yoxla</button>
+      <button onclick="nextQuestion()">Növbəti</button>
+
+      <div class="small" id="feedback">—</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { en: "Apple", az: "alma" },
+  { en: "Book", az: "kitab" },
+  { en: "Water", az: "su" },
+  { en: "School", az: "məktəb" },
+  { en: "Sun", az: "günəş" }
+];
+
+let index = 0;
+let score = 0;
+
+function loadQuestion(){
+  document.getElementById("word").innerText = questions[index].en;
+  document.getElementById("answer").value = "";
+  document.getElementById("feedback").innerText = "—";
+}
+
+function check(){
+  const user = document.getElementById("answer").value.trim().toLowerCase();
+  const correct = questions[index].az;
+
+  if(user === correct){
+    document.getElementById("feedback").innerText = "Doğrudur ✅";
+    score++;
+    document.getElementById("score").innerText = score;
+  }else{
+    document.getElementById("feedback").innerText =
+      "Səhv ❌ Düzgün cavab: " + correct;
+  }
+}
+
+function nextQuestion(){
+  index++;
+  if(index >= questions.length){
+    index = 0;
+  }
+  loadQuestion();
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
