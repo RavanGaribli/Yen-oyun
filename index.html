@@ -1,150 +1,299 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EngPlay — İngilis dili oyunu</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngPlay — İngilis Dili Oyunu</title>
+    <style>
+        /* Ümumi Dizayn */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 { margin-bottom: 10px; color: #4a4a4a; }
+        p { color: #666; margin-bottom: 25px; }
+
+        /* Düymələr */
+        button {
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px 0;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #5b4cc4;
+            transform: translateY(-2px);
+        }
+
+        /* Geri Düyməsi */
+        .btn-back {
+            background-color: #b2bec3;
+            margin-top: 20px;
+        }
+        .btn-back:hover { background-color: #636e72; }
+
+        /* Səviyyə Düymələri */
+        .level-btn { font-weight: bold; }
+        .level-easy { background-color: #00b894; }
+        .level-medium { background-color: #e17055; }
+        .level-hard { background-color: #d63031; }
+
+        /* Variantlar */
+        .option {
+            background-color: #dfe6e9;
+            color: #2d3436;
+            text-align: left;
+            padding-left: 20px;
+        }
+        .option:hover { background-color: #cdd6db; }
+
+        /* Düzgün/Səhv Rənglər */
+        .correct { 
+            background-color: #00b894 !important; 
+            color: white !important;
+            border-color: #00b894;
+        }
+        .wrong { 
+            background-color: #d63031 !important; 
+            color: white !important;
+            animation: shake 0.3s;
+        }
+
+        /* Ekranların Gizlədilməsi */
+        .screen { display: none; animation: fadeIn 0.5s; }
+        .active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .progress {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
+    <div class="container">
+        <div id="home-screen" class="screen active">
+            <h1>EngPlay 🇬🇧</h1>
+            <p>İngilis dili biliyini yoxla və inkişaf etdir!</p>
+            <button onclick="showScreen('level-screen')">Oyuna Başla</button>
+        </div>
 
-  <div id="home" class="card">
-    <h2>EngPlay</h2>
-    <p>
-      Bu sayt İngilis dili öyrənmək üçündür.
-      Hər səviyyədə 10 sual var.
-      Hamısı düzgün cavablandırıldıqda növbəti səviyyə açılır.
-    </p>
-    <button onclick="showLevels()">Suallara başla</button>
-  </div>
+        <div id="level-screen" class="screen">
+            <h2>Səviyyə Seç</h2>
+            <button class="level-btn level-easy" onclick="startGame(0)">Asan (Beginner)</button>
+            <button class="level-btn level-medium" onclick="startGame(1)">Orta (Intermediate)</button>
+            <button class="level-btn level-hard" onclick="startGame(2)">Çətin (Advanced)</button>
+            <button class="btn-back" onclick="showScreen('home-screen')">Geri</button>
+        </div>
 
-  <div id="levels" class="card hidden">
-    <h3>Səviyyə seç</h3>
-    <button onclick="startLevel(0)">Asan</button>
-    <button onclick="startLevel(1)">Orta</button>
-    <button onclick="startLevel(2)">Çətin</button>
-    <button class="back-btn" onclick="goHome()">Geri</button>
-  </div>
+        <div id="game-screen" class="screen">
+            <span class="progress" id="progress-text">Level 1 - Sual 1/10</span>
+            <h2 id="question-text">Sual burda olacaq</h2>
+            <div id="options-container">
+                </div>
+            <button class="btn-back" onclick="showScreen('level-screen')">Səviyyələrə qayıt</button>
+        </div>
 
-  <div id="quiz" class="card hidden">
-    <h3 id="question"></h3>
-    <div id="options"></div>
-    <button class="back-btn" onclick="goHome()">Geri</button>
-  </div>
-
-  <div id="finish" class="card hidden">
-    <h2>Təbriklər 🎉</h2>
-    <p>Bütün 30 sualı düzgün cavablandırdın!</p>
-    <button class="back-btn" onclick="goHome()">Geri</button>
-  </div>
-
-</div>
+        <div id="result-screen" class="screen">
+            <h1 id="result-title">Təbriklər! 🎉</h1>
+            <p id="result-msg">Siz bu səviyyəni uğurla bitirdiniz.</p>
+            <button id="next-level-btn" onclick="nextLevel()">Növbəti Səviyyə</button>
+            <button class="btn-back" onclick="showScreen('home-screen')">Ana Menyu</button>
+        </div>
+    </div>
 
 <script>
-const home   = document.getElementById("home");
-const levels = document.getElementById("levels");
-const quiz   = document.getElementById("quiz");
-const finish = document.getElementById("finish");
+    // --- SUALLAR BAZASI (DATA) ---
+    // Format: { q: "Sual", o: ["A", "B", "C"], a: düzgün_index }
+    const questions = [
+        // Level 0: Asan
+        [
+            { q: "I ___ a student.", o: ["am", "is", "are"], a: 0 },
+            { q: "She ___ happy today.", o: ["are", "is", "am"], a: 1 },
+            { q: "They ___ football every day.", o: ["plays", "played", "play"], a: 2 },
+            { q: "___ you like coffee?", o: ["Do", "Does", "Is"], a: 0 },
+            { q: "This is ___ apple.", o: ["a", "an", "two"], a: 1 },
+            { q: "My brother ___ a car.", o: ["have", "has", "is"], a: 1 },
+            { q: "We ___ at home now.", o: ["are", "is", "am"], a: 0 },
+            { q: "Can you ___ English?", o: ["speak", "speaks", "speaking"], a: 0 },
+            { q: "The cat is ___ the table.", o: ["in", "on", "at"], a: 1 },
+            { q: "___ name is John.", o: ["He", "His", "Him"], a: 1 }
+        ],
+        // Level 1: Orta
+        [
+            { q: "I ___ here for 5 years.", o: ["live", "have lived", "lived"], a: 1 },
+            { q: "If I ___ you, I would go.", o: ["was", "were", "am"], a: 1 },
+            { q: "She went to school, ___ she?", o: ["didn't", "doesn't", "isn't"], a: 0 },
+            { q: "This car is ___ than that one.", o: ["expensive", "more expensive", "expensiver"], a: 1 },
+            { q: "I look forward to ___ you.", o: ["see", "seeing", "saw"], a: 1 },
+            { q: "The book ___ by Shakespeare.", o: ["wrote", "was written", "written"], a: 1 },
+            { q: "He stopped ___ cigarettes.", o: ["smoke", "to smoking", "smoking"], a: 2 },
+            { q: "I prefer tea ___ coffee.", o: ["than", "to", "from"], a: 1 },
+            { q: "Unless you ___, you will fail.", o: ["study", "don't study", "will study"], a: 0 },
+            { q: "I wish I ___ a car.", o: ["have", "had", "has"], a: 1 }
+        ],
+        // Level 2: Çətin
+        [
+            { q: "No sooner ___ arrived than it rained.", o: ["I had", "had I", "did I"], a: 1 },
+            { q: "It's high time we ___ home.", o: ["go", "went", "have gone"], a: 1 },
+            { q: "She denied ___ the vase.", o: ["breaking", "to break", "break"], a: 0 },
+            { q: "Had I known, I ___ you.", o: ["would help", "would have helped", "helped"], a: 1 },
+            { q: "The man ___ car was stolen is here.", o: ["who", "which", "whose"], a: 2 },
+            { q: "Seldom ___ such beauty.", o: ["I have seen", "have I seen", "seen I have"], a: 1 },
+            { q: "I'd rather you ___ now.", o: ["leave", "left", "leaving"], a: 1 },
+            { q: "By next year, I ___ here for a decade.", o: ["will live", "will have lived", "am living"], a: 1 },
+            { q: "Despite ___ tired, he kept working.", o: ["he was", "of being", "being"], a: 2 },
+            { q: "Not only ___ late, but he was rude.", o: ["was he", "he was", "is he"], a: 0 }
+        ]
+    ];
 
-const data = [
-  [
-    ["I ___ a student.","am","is","are",0],
-    ["She ___ happy.","is","are","am",0],
-    ["We ___ friends.","are","is","am",0],
-    ["He ___ a car.","has","have","had",0],
-    ["They ___ football.","play","plays","played",0],
-    ["Cat is an ___ animal.","animal","apple","table",0],
-    ["Sun is ___ .","hot","cold","blue",0],
-    ["I ___ coffee.","like","likes","liked",0],
-    ["She can ___ .","run","runs","ran",0],
-    ["This is a ___ .","book","books","booking",0]
-  ],
-  [
-    ["I have lived here ___ 5 years.","for","since","from",0],
-    ["She ___ to school yesterday.","went","go","goes",0],
-    ["He is ___ than me.","taller","tall","tallest",0],
-    ["We were ___ tired.","very","much","many",0],
-    ["They ___ finished.","have","has","had",0],
-    ["I didn’t ___ him.","see","saw","seen",0],
-    ["She speaks ___ .","English","England","Englishes",0],
-    ["This is the ___ movie.","best","better","good",0],
-    ["I’m interested ___ music.","in","on","at",0],
-    ["He works ___ a bank.","in","on","at",0]
-  ],
-  [
-    ["If I ___ time, I would help.","had","have","has",0],
-    ["She speaks as if she ___ everything.","knew","know","knows",0],
-    ["Hardly ___ arrived when it rained.","had I","I had","have I",0],
-    ["This is the man ___ car was stolen.","whose","who","which",0],
-    ["No sooner ___ than he left.","had he arrived","he arrived","did he arrive",0],
-    ["I wish I ___ earlier.","had come","came","come",0],
-    ["She denied ___ it.","doing","do","did",0],
-    ["He suggested ___ a break.","taking","take","took",0],
-    ["The book ___ by millions.","was read","were read","read",0],
-    ["Not only ___ late, but tired.","was he","he was","is he",0]
-  ]
-];
+    let currentLevel = 0;
+    let questionIndex = 0;
+    let score = 0; // Bu versiyada sadəcə xətti irəliləyiş var
 
-let level = 0;
-let index = 0;
+    // Ekran dəyişdirmə funksiyası
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
 
-function showLevels(){
-  home.classList.add("hidden");
-  levels.classList.remove("hidden");
-}
-
-function startLevel(l){
-  level = l;
-  index = 0;
-  levels.classList.add("hidden");
-  quiz.classList.remove("hidden");
-  loadQuestion();
-}
-
-function loadQuestion(){
-  const q = data[level][index];
-  document.getElementById("question").textContent =
-    `${index + 1}/10 — ${q[0]}`;
-
-  const options = document.getElementById("options");
-  options.innerHTML = "";
-
-  for(let i=1;i<=3;i++){
-    const btn = document.createElement("button");
-    btn.textContent = q[i];
-    btn.className = "option";
-    btn.onclick = () => check(i-1, q[3], btn); // düzəliş q[3]
-    options.appendChild(btn);
-  }
-}
-
-function check(selected, correct, btn){
-  if(selected === correct){
-    btn.classList.add("correct");
-    setTimeout(() => {
-      index++;
-      if(index < 10){
+    // Oyunu başlatmaq
+    function startGame(level) {
+        currentLevel = level;
+        questionIndex = 0;
+        showScreen('game-screen');
         loadQuestion();
-      } else if(level < 2){
-        startLevel(level + 1);
-      } else {
-        quiz.classList.add("hidden");
-        finish.classList.remove("hidden");
-      }
-    }, 500);
-  } else {
-    btn.classList.add("wrong");
-  }
-}
+    }
 
-function goHome(){
-  home.classList.remove("hidden");
-  levels.classList.add("hidden");
-  quiz.classList.add("hidden");
-  finish.classList.add("hidden");
-}
+    // Sualı yükləmək
+    function loadQuestion() {
+        const qData = questions[currentLevel][questionIndex];
+        
+        // Progress bar mətni (Məsələn: Level 1 - 5/10)
+        document.getElementById('progress-text').textContent = 
+            `Səviyyə: ${getLevelName(currentLevel)} — Sual ${questionIndex + 1}/10`;
+        
+        document.getElementById('question-text').textContent = qData.q;
+        
+        const optionsDiv = document.getElementById('options-container');
+        optionsDiv.innerHTML = ''; // Köhnə variantları təmizlə
+
+        qData.o.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option';
+            btn.textContent = opt;
+            btn.onclick = () => checkAnswer(index, qData.a, btn);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    // Cavabı yoxlamaq
+    function checkAnswer(selected, correct, btnElement) {
+        // Düymələri deaktiv et ki, təkrar basılmasın
+        const allBtns = document.querySelectorAll('.option');
+        allBtns.forEach(b => b.disabled = true);
+
+        if (selected === correct) {
+            btnElement.classList.add('correct');
+            // 1 saniyə sonra növbəti suala keç
+            setTimeout(() => {
+                nextQuestion();
+            }, 1000);
+        } else {
+            btnElement.classList.add('wrong');
+            // Səhv olanda düzgün cavabı da göstər (istəyə bağlı)
+            allBtns[correct].classList.add('correct');
+            
+            // Yenə də növbəti suala keçir (və ya burda "game over" qoya bilərsən)
+            setTimeout(() => {
+                nextQuestion();
+            }, 1500);
+        }
+    }
+
+    // Növbəti sual məntiqi
+    function nextQuestion() {
+        questionIndex++;
+        
+        if (questionIndex < 10) {
+            loadQuestion();
+        } else {
+            finishLevel();
+        }
+    }
+
+    // Səviyyə bitdikdə
+    function finishLevel() {
+        showScreen('result-screen');
+        const nextBtn = document.getElementById('next-level-btn');
+        const msg = document.getElementById('result-msg');
+
+        if (currentLevel < 2) {
+            msg.textContent = `${getLevelName(currentLevel)} səviyyəsini bitirdiniz! Növbəti səviyyəyə hazırsınız?`;
+            nextBtn.style.display = 'inline-block';
+            nextBtn.textContent = "Növbəti Səviyyəyə Keç";
+            nextBtn.onclick = () => startGame(currentLevel + 1);
+        } else {
+            msg.textContent = "Təbriklər! Siz bütün səviyyələri uğurla başa vurdunuz!";
+            nextBtn.style.display = 'none'; // Daha level yoxdur
+        }
+    }
+
+    // Növbəti level funksiyası (Result ekranından çağırılır)
+    function nextLevel() {
+        if(currentLevel < 2) {
+            startGame(currentLevel + 1);
+        }
+    }
+
+    // Yardımçı: Səviyyə adını qaytarır
+    function getLevelName(idx) {
+        if(idx === 0) return "Asan";
+        if(idx === 1) return "Orta";
+        if(idx === 2) return "Çətin";
+        return "";
+    }
 </script>
 
 </body>
