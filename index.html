@@ -1,74 +1,139 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="az">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>EngPlay — İngilis oyunu</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EngPlay — İngilis dili oyunu</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<div class="app">
-  <header>
-    <h1>EngPlay</h1>
-    <div>Bal: <span id="score">0</span></div>
-  </header>
 
-  <div class="row">
-    <div class="card">
-      <div class="big" id="word"></div>
-      <div class="small">Tərcüməni yaz</div>
+<div class="container">
 
-      <input type="text" id="answer" placeholder="Cavab yaz..." />
-      <button onclick="check()">Yoxla</button>
-      <button onclick="nextQuestion()">Növbəti</button>
-
-      <div class="small" id="feedback">—</div>
-    </div>
+  <div id="home" class="card">
+    <h2>EngPlay</h2>
+    <p>
+      Bu sayt İngilis dili öyrənmək üçündür.  
+      Hər səviyyədə 10 sual var.  
+      Hamısı düzgün cavablandırıldıqda növbəti səviyyə açılır.
+    </p>
+    <button onclick="showLevels()">Suallara başla</button>
   </div>
+
+  <div id="levels" class="card hidden">
+    <h3>Səviyyə seç</h3>
+    <button onclick="startLevel(0)">Asan</button>
+    <button onclick="startLevel(1)">Orta</button>
+    <button onclick="startLevel(2)">Çətin</button>
+  </div>
+
+  <div id="quiz" class="card hidden">
+    <h3 id="question"></h3>
+    <div id="options"></div>
+  </div>
+
+  <div id="finish" class="card hidden">
+    <h2>Təbriklər 🎉</h2>
+    <p>Bütün 30 sualı düzgün cavablandırdın!</p>
+  </div>
+
 </div>
 
 <script>
-const questions = [
-  { en: "Apple", az: "alma" },
-  { en: "Book", az: "kitab" },
-  { en: "Water", az: "su" },
-  { en: "School", az: "məktəb" },
-  { en: "Sun", az: "günəş" }
+const data = [
+  // ASAN
+  [
+    ["I ___ a student.","am","is","are",0],
+    ["She ___ happy.","is","are","am",0],
+    ["We ___ friends.","are","is","am",0],
+    ["He ___ a car.","has","have","had",0],
+    ["They ___ football.","play","plays","played",0],
+    ["Cat is an ___ animal.","animal","apple","table",0],
+    ["Sun is ___ .","hot","cold","blue",0],
+    ["I ___ coffee.","like","likes","liked",0],
+    ["She can ___ .","run","runs","ran",0],
+    ["This is a ___ .","book","books","booking",0]
+  ],
+  // ORTA
+  [
+    ["I have lived here ___ 5 years.","for","since","from",0],
+    ["She ___ to school yesterday.","went","go","goes",0],
+    ["He is ___ than me.","taller","tall","tallest",0],
+    ["We were ___ tired.","very","much","many",0],
+    ["They ___ finished.","have","has","had",0],
+    ["I didn’t ___ him.","see","saw","seen",0],
+    ["She speaks ___ .","English","England","Englishes",0],
+    ["This is the ___ movie.","best","better","good",0],
+    ["I’m interested ___ music.","in","on","at",0],
+    ["He works ___ a bank.","in","on","at",0]
+  ],
+  // ÇƏTİN
+  [
+    ["If I ___ time, I would help.","had","have","has",0],
+    ["She speaks as if she ___ everything.","knew","know","knows",0],
+    ["Hardly ___ arrived when it rained.","had I","I had","have I",0],
+    ["This is the man ___ car was stolen.","whose","who","which",0],
+    ["No sooner ___ than he left.","had he arrived","he arrived","did he arrive",0],
+    ["I wish I ___ earlier.","had come","came","come",0],
+    ["She denied ___ it.","doing","do","did",0],
+    ["He suggested ___ a break.","taking","take","took",0],
+    ["The book ___ by millions.","was read","were read","read",0],
+    ["Not only ___ late, but tired.","was he","he was","is he",0]
+  ]
 ];
 
+let level = 0;
 let index = 0;
-let score = 0;
 
-function loadQuestion(){
-  document.getElementById("word").innerText = questions[index].en;
-  document.getElementById("answer").value = "";
-  document.getElementById("feedback").innerText = "—";
+function showLevels(){
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("levels").classList.remove("hidden");
 }
 
-function check(){
-  const user = document.getElementById("answer").value.trim().toLowerCase();
-  const correct = questions[index].az;
-
-  if(user === correct){
-    document.getElementById("feedback").innerText = "Doğrudur ✅";
-    score++;
-    document.getElementById("score").innerText = score;
-  }else{
-    document.getElementById("feedback").innerText =
-      "Səhv ❌ Düzgün cavab: " + correct;
-  }
-}
-
-function nextQuestion(){
-  index++;
-  if(index >= questions.length){
-    index = 0;
-  }
+function startLevel(l){
+  level = l;
+  index = 0;
+  document.getElementById("levels").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
   loadQuestion();
 }
 
-loadQuestion();
+function loadQuestion(){
+  const q = data[level][index];
+  document.getElementById("question").textContent =
+    `${index + 1}/10 — ${q[0]}`;
+
+  const options = document.getElementById("options");
+  options.innerHTML = "";
+
+  for(let i=1;i<=3;i++){
+    const btn = document.createElement("button");
+    btn.textContent = q[i];
+    btn.className = "option";
+    btn.onclick = () => check(i-1, q[4], btn);
+    options.appendChild(btn);
+  }
+}
+
+function check(selected, correct, btn){
+  if(selected === correct){
+    btn.classList.add("correct");
+    setTimeout(() => {
+      index++;
+      if(index < 10){
+        loadQuestion();
+      } else if(level < 2){
+        startLevel(level + 1);
+      } else {
+        document.getElementById("quiz").classList.add("hidden");
+        document.getElementById("finish").classList.remove("hidden");
+      }
+    }, 600);
+  } else {
+    btn.classList.add("wrong");
+  }
+}
 </script>
+
 </body>
 </html>
