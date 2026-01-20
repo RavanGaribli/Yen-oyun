@@ -2,7 +2,7 @@ body{
   margin:0;
   font-family:Arial, sans-serif;
   background:#0f1220;
-  color:#ffffff;
+  color:#fff;
 }
 
 .container{
@@ -15,37 +15,37 @@ body{
   background:#1a1d35;
   border-radius:12px;
   padding:20px;
-  margin-bottom:15px;
+  margin-bottom:20px;
+}
+
+/* 🔴 BUNU SİLMƏ — PROBLEMİN HƏLLİ BURADIR */
+.hidden{
+  display:none !important;
 }
 
 button{
-  width:100%;
   padding:12px;
   margin-top:10px;
   border:none;
   border-radius:8px;
-  background:#5a7cff;
-  color:#fff;
-  font-size:16px;
+  background:#7da2ff;
+  color:#000;
+  font-size:15px;
   cursor:pointer;
 }
 
-button:hover{
-  opacity:0.9;
-}
-
 .option{
+  display:block;
+  width:100%;
   background:#2a2e55;
+  color:#fff;
 }
 
 .correct{
   background:#2ecc71 !important;
+  color:#000;
 }
 
 .wrong{
   background:#e74c3c !important;
-}
-
-.hidden{
-  display:none;
 }
