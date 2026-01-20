@@ -1,11 +1,11 @@
 /* style.css */
 /* Əgər HTML-də inline CSS istifadə etmirsənsə, bunu əlavə et */
 
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#0f1220; /* tünd göy rəng */
-  color:#fff;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1220; /* tünd göy rəng */
+  color: #fff; /* mətin ağ */
 }
 
 .container{
