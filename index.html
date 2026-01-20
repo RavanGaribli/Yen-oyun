@@ -13,8 +13,8 @@
   <div id="home" class="card">
     <h2>EngPlay</h2>
     <p>
-      Bu sayt İngilis dili öyrənmək üçündür.  
-      Hər səviyyədə 10 sual var.  
+      Bu sayt İngilis dili öyrənmək üçündür.
+      Hər səviyyədə 10 sual var.
       Hamısı düzgün cavablandırıldıqda növbəti səviyyə açılır.
     </p>
     <button onclick="showLevels()">Suallara başla</button>
@@ -40,13 +40,11 @@
 </div>
 
 <script>
-// DOM elementlər
-const home = document.getElementById("home");
+const home   = document.getElementById("home");
 const levels = document.getElementById("levels");
-const quiz = document.getElementById("quiz");
+const quiz   = document.getElementById("quiz");
 const finish = document.getElementById("finish");
 
-// Suallar
 const data = [
   [
     ["I ___ a student.","am","is","are",0],
@@ -132,7 +130,7 @@ function check(selected, correct, btn){
         quiz.classList.add("hidden");
         finish.classList.remove("hidden");
       }
-    }, 600);
+    }, 500);
   } else {
     btn.classList.add("wrong");
   }
