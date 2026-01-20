@@ -40,8 +40,14 @@
 </div>
 
 <script>
+// DOM elementlər
+const home = document.getElementById("home");
+const levels = document.getElementById("levels");
+const quiz = document.getElementById("quiz");
+const finish = document.getElementById("finish");
+
+// Suallar
 const data = [
-  // ASAN
   [
     ["I ___ a student.","am","is","are",0],
     ["She ___ happy.","is","are","am",0],
@@ -54,7 +60,6 @@ const data = [
     ["She can ___ .","run","runs","ran",0],
     ["This is a ___ .","book","books","booking",0]
   ],
-  // ORTA
   [
     ["I have lived here ___ 5 years.","for","since","from",0],
     ["She ___ to school yesterday.","went","go","goes",0],
@@ -67,7 +72,6 @@ const data = [
     ["I’m interested ___ music.","in","on","at",0],
     ["He works ___ a bank.","in","on","at",0]
   ],
-  // ÇƏTİN
   [
     ["If I ___ time, I would help.","had","have","has",0],
     ["She speaks as if she ___ everything.","knew","know","knows",0],
@@ -86,15 +90,15 @@ let level = 0;
 let index = 0;
 
 function showLevels(){
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("levels").classList.remove("hidden");
+  home.classList.add("hidden");
+  levels.classList.remove("hidden");
 }
 
 function startLevel(l){
   level = l;
   index = 0;
-  document.getElementById("levels").classList.add("hidden");
-  document.getElementById("quiz").classList.remove("hidden");
+  levels.classList.add("hidden");
+  quiz.classList.remove("hidden");
   loadQuestion();
 }
 
@@ -125,29 +129,14 @@ function check(selected, correct, btn){
       } else if(level < 2){
         startLevel(level + 1);
       } else {
-        document.getElementById("quiz").classList.add("hidden");
-        document.getElementById("finish").classList.remove("hidden");
+        quiz.classList.add("hidden");
+        finish.classList.remove("hidden");
       }
     }, 600);
   } else {
     btn.classList.add("wrong");
   }
 }
-<script>
-const home = document.getElementById("home");
-const levels = document.getElementById("levels");
-const quiz = document.getElementById("quiz");
-const finish = document.getElementById("finish");
-
-const data = [
-  // ASAN
-  [
-    ["I ___ a student.","am","is","are",0],
-    ...
-  ]
-];
-
-// qalan JS KODLAR BURADA
 </script>
 
 </body>
