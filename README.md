@@ -7,7 +7,7 @@
 - Hər səviyyədə 10 sual  
 - Hamısı düzgün olduqda növbəti səviyyə açılır  
 - Hər ekranda “Geri” düyməsi ilə ana ekrana qayıtmaq mümkündür  
-- Saytın arxa fonu tünd qırmızıdır  
+- Saytın arxa fonu tünd göydür (#0f1220)  
 - GitHub Pages uyğundur  
 
 ## Quraşdırma
