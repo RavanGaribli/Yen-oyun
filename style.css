@@ -1,9 +1,8 @@
-/* style.css */
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:#0f1220; /* tünd göy fon */
-  color:#fff; /* mətin ağ */
+  background:#0f1220; /* tünd göy */
+  color:#fff;
 }
 
 .container{
@@ -52,7 +51,7 @@ button{
 }
 
 .back-btn{
-  background:#ffa07a; 
+  background:#ffa07a;
   color:#000;
   margin-top:15px;
 }
