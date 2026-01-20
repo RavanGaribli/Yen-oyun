@@ -1,7 +1,7 @@
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:#0f1220;
+  background:#8B0000; /* tünd qırmızı */
   color:#fff;
 }
 
@@ -18,7 +18,6 @@ body{
   margin-bottom:20px;
 }
 
-/* 🔴 BUNU SİLMƏ — PROBLEMİN HƏLLİ BURADIR */
 .hidden{
   display:none !important;
 }
@@ -48,4 +47,11 @@ button{
 
 .wrong{
   background:#e74c3c !important;
+}
+
+/* Geri düyməsi üçün */
+.back-btn{
+  background:#ffa07a; 
+  color:#000;
+  margin-top:15px;
 }
