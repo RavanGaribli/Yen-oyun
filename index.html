@@ -4,7 +4,65 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EngPlay — İngilis dili oyunu</title>
-<link rel="stylesheet" href="style.css">
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#8B0000; /* tünd qırmızı */
+  color:#fff;
+}
+
+.container{
+  max-width:700px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:#1a1d35;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.hidden{
+  display:none !important;
+}
+
+button{
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:#7da2ff;
+  color:#000;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.option{
+  display:block;
+  width:100%;
+  background:#2a2e55;
+  color:#fff;
+  margin-top:10px;
+}
+
+.correct{
+  background:#2ecc71 !important;
+  color:#000;
+}
+
+.wrong{
+  background:#e74c3c !important;
+}
+
+.back-btn{
+  background:#ffa07a; 
+  color:#000;
+  margin-top:15px;
+}
+</style>
 </head>
 <body>
 
@@ -25,16 +83,19 @@
     <button onclick="startLevel(0)">Asan</button>
     <button onclick="startLevel(1)">Orta</button>
     <button onclick="startLevel(2)">Çətin</button>
+    <button class="back-btn" onclick="goHome()">Geri</button>
   </div>
 
   <div id="quiz" class="card hidden">
     <h3 id="question"></h3>
     <div id="options"></div>
+    <button class="back-btn" onclick="goHome()">Geri</button>
   </div>
 
   <div id="finish" class="card hidden">
     <h2>Təbriklər 🎉</h2>
     <p>Bütün 30 sualı düzgün cavablandırdın!</p>
+    <button class="back-btn" onclick="goHome()">Geri</button>
   </div>
 
 </div>
@@ -112,7 +173,7 @@ function loadQuestion(){
     const btn = document.createElement("button");
     btn.textContent = q[i];
     btn.className = "option";
-    btn.onclick = () => check(i-1, q[4], btn);
+    btn.onclick = () => check(i-1, q[3], btn);
     options.appendChild(btn);
   }
 }
@@ -134,6 +195,13 @@ function check(selected, correct, btn){
   } else {
     btn.classList.add("wrong");
   }
+}
+
+function goHome(){
+  home.classList.remove("hidden");
+  levels.classList.add("hidden");
+  quiz.classList.add("hidden");
+  finish.classList.add("hidden");
 }
 </script>
 
