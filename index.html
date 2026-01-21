@@ -3,259 +3,439 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EngPlay — İngilis Dili Oyunu</title>
+    <title>EngPlay Pro — İngilis Dili Oyunu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Ümumi Dizayn */
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --success: #00b894;
+            --danger: #ff7675;
+            --dark: #2d3436;
+            --light: #dfe6e9;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            background-color: white;
-            width: 90%;
-            max-width: 500px;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            text-align: center;
-            position: relative;
             overflow: hidden;
         }
 
-        h1 { margin-bottom: 10px; color: #4a4a4a; }
-        p { color: #666; margin-bottom: 25px; }
+        /* Arxa fon bəzəkləri (Circles) */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+        .c1 { width: 300px; height: 300px; top: -50px; left: -50px; }
+        .c2 { width: 200px; height: 200px; bottom: -50px; right: -50px; }
 
-        /* Düymələr */
-        button {
-            background-color: #6c5ce7;
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            width: 90%;
+            max-width: 480px;
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            transition: height 0.3s ease;
+        }
+
+        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 5px; }
+        h2 { color: var(--dark); font-weight: 600; }
+        p { color: #636e72; margin-bottom: 30px; font-size: 1rem; }
+
+        /* Button Stylling */
+        .btn {
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 15px;
             font-size: 16px;
-            border-radius: 8px;
+            font-weight: 600;
+            border-radius: 12px;
             cursor: pointer;
-            margin: 8px 0;
             width: 100%;
-            transition: all 0.3s ease;
+            margin-bottom: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
         }
 
-        button:hover {
-            background-color: #5b4cc4;
-            transform: translateY(-2px);
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+            background: #5b4cc4;
         }
 
-        /* Geri Düyməsi */
-        .btn-back {
-            background-color: #b2bec3;
-            margin-top: 20px;
+        .btn:active { transform: translateY(-1px); }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #b2bec3;
+            color: #636e72;
+            box-shadow: none;
         }
-        .btn-back:hover { background-color: #636e72; }
+        .btn-outline:hover {
+            background: #b2bec3;
+            color: white;
+        }
 
-        /* Səviyyə Düymələri */
-        .level-btn { font-weight: bold; }
-        .level-easy { background-color: #00b894; }
-        .level-medium { background-color: #e17055; }
-        .level-hard { background-color: #d63031; }
-
-        /* Variantlar */
-        .option {
-            background-color: #dfe6e9;
-            color: #2d3436;
+        /* Səviyyə Kartları */
+        .level-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            border: 2px solid #eee;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
             text-align: left;
-            padding-left: 20px;
         }
-        .option:hover { background-color: #cdd6db; }
-
-        /* Düzgün/Səhv Rənglər */
-        .correct { 
-            background-color: #00b894 !important; 
-            color: white !important;
-            border-color: #00b894;
+        .level-card:hover {
+            border-color: var(--primary);
+            background: #f8f9fa;
         }
-        .wrong { 
-            background-color: #d63031 !important; 
-            color: white !important;
-            animation: shake 0.3s;
+        .level-icon { font-size: 24px; margin-right: 15px; }
+        .level-info h3 { margin: 0; font-size: 16px; color: var(--dark); }
+        .level-info span { font-size: 12px; color: #888; }
+
+        /* Quiz Sahəsi */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #b2bec3;
         }
 
-        /* Ekranların Gizlədilməsi */
-        .screen { display: none; animation: fadeIn 0.5s; }
-        .active { display: block; }
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        #question-text {
+            font-size: 1.3rem;
+            color: var(--dark);
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            color: var(--dark);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            text-align: left;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: var(--primary);
+            background-color: #f0f3ff;
+        }
+
+        /* Variant Rəngləri */
+        .option.correct {
+            background-color: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        .option.wrong {
+            background-color: var(--danger);
+            border-color: var(--danger);
+            color: white;
+            animation: shake 0.4s;
+        }
+        .option.disabled {
+            pointer-events: none;
+        }
+
+        /* İkonlar */
+        .status-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+            display: none;
+        }
+        .correct .status-icon, .wrong .status-icon { display: block; }
+
+        /* Ekranlar */
+        .screen { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .screen.active { display: block; opacity: 1; }
+
+        /* Nəticə Ekranı */
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            border: 5px solid var(--primary);
         }
 
         @keyframes shake {
-            0% { transform: translateX(0); }
+            0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-            100% { transform: translateX(0); }
+            75% { transform: translateX(5px); }
         }
-
-        .progress {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 15px;
-            display: block;
+        
+        @media (max-width: 400px) {
+            .container { padding: 25px 20px; width: 95%; }
+            h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+
     <div class="container">
         <div id="home-screen" class="screen active">
-            <h1>EngPlay 🇬🇧</h1>
-            <p>İngilis dili biliyini yoxla və inkişaf etdir!</p>
-            <button onclick="showScreen('level-screen')">Oyuna Başla</button>
+            <div style="font-size: 60px; margin-bottom: 10px;">🇬🇧</div>
+            <h1>EngPlay Pro</h1>
+            <p>Qrammatika və Söz ehtiyatını əylənərək öyrən.</p>
+            <button class="btn" onclick="showScreen('level-screen')">Oyuna Başla 🚀</button>
         </div>
 
         <div id="level-screen" class="screen">
-            <h2>Səviyyə Seç</h2>
-            <button class="level-btn level-easy" onclick="startGame(0)">Asan (Beginner)</button>
-            <button class="level-btn level-medium" onclick="startGame(1)">Orta (Intermediate)</button>
-            <button class="level-btn level-hard" onclick="startGame(2)">Çətin (Advanced)</button>
-            <button class="btn-back" onclick="showScreen('home-screen')">Geri</button>
+            <h2>Səviyyəni Seç</h2>
+            <p>Biliyini yoxlamaq üçün uyğun səviyyəni seç.</p>
+            
+            <div class="level-card" onclick="startGame(0)">
+                <div class="level-icon">🌱</div>
+                <div class="level-info">
+                    <h3>Beginner (Asan)</h3>
+                    <span>Sadə zamanlar və gündəlik sözlər</span>
+                </div>
+            </div>
+
+            <div class="level-card" onclick="startGame(1)">
+                <div class="level-icon">🔥</div>
+                <div class="level-info">
+                    <h3>Intermediate (Orta)</h3>
+                    <span>Qarışıq qrammatika və ifadələr</span>
+                </div>
+            </div>
+
+            <div class="level-card" onclick="startGame(2)">
+                <div class="level-icon">💎</div>
+                <div class="level-info">
+                    <h3>Advanced (Çətin)</h3>
+                    <span>İdiomalar və mürəkkəb cümlələr</span>
+                </div>
+            </div>
+
+            <button class="btn btn-outline" style="margin-top: 20px;" onclick="showScreen('home-screen')">Geri Qayıt</button>
         </div>
 
         <div id="game-screen" class="screen">
-            <span class="progress" id="progress-text">Level 1 - Sual 1/10</span>
-            <h2 id="question-text">Sual burda olacaq</h2>
+            <div class="quiz-header">
+                <span id="level-badge">Level 1</span>
+                <span id="score-badge">Xal: 0</span>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <h2 id="question-text">Sual yüklənir...</h2>
+            
             <div id="options-container">
                 </div>
-            <button class="btn-back" onclick="showScreen('level-screen')">Səviyyələrə qayıt</button>
+
+            <button class="btn btn-outline" style="margin-top: 20px;" onclick="showScreen('level-screen')">Çıxış</button>
         </div>
 
         <div id="result-screen" class="screen">
-            <h1 id="result-title">Təbriklər! 🎉</h1>
-            <p id="result-msg">Siz bu səviyyəni uğurla bitirdiniz.</p>
-            <button id="next-level-btn" onclick="nextLevel()">Növbəti Səviyyə</button>
-            <button class="btn-back" onclick="showScreen('home-screen')">Ana Menyu</button>
+            <div class="score-circle" id="final-score">8/10</div>
+            <h2 id="result-title">Əla Nəticə! 🎉</h2>
+            <p id="result-msg">Siz bu səviyyəni uğurla başa vurdunuz.</p>
+            
+            <button class="btn" id="next-level-btn" onclick="nextLevel()">Növbəti Səviyyə</button>
+            <button class="btn btn-outline" onclick="showScreen('home-screen')">Ana Menyuya Qayıt</button>
         </div>
     </div>
 
 <script>
-    // --- SUALLAR BAZASI (DATA) ---
-    // Format: { q: "Sual", o: ["A", "B", "C"], a: düzgün_index }
+    // --- MƏLUMAT BAZASI (Qrammatika + Lüğət) ---
     const questions = [
-        // Level 0: Asan
+        // Level 0: Beginner (Mixed)
         [
-            { q: "I ___ a student.", o: ["am", "is", "are"], a: 0 },
-            { q: "She ___ happy today.", o: ["are", "is", "am"], a: 1 },
-            { q: "They ___ football every day.", o: ["plays", "played", "play"], a: 2 },
-            { q: "___ you like coffee?", o: ["Do", "Does", "Is"], a: 0 },
-            { q: "This is ___ apple.", o: ["a", "an", "two"], a: 1 },
-            { q: "My brother ___ a car.", o: ["have", "has", "is"], a: 1 },
-            { q: "We ___ at home now.", o: ["are", "is", "am"], a: 0 },
-            { q: "Can you ___ English?", o: ["speak", "speaks", "speaking"], a: 0 },
-            { q: "The cat is ___ the table.", o: ["in", "on", "at"], a: 1 },
-            { q: "___ name is John.", o: ["He", "His", "Him"], a: 1 }
+            { q: "I ___ very happy today.", o: ["am", "is", "are"], a: 0 },
+            { q: "'Alma' sözünün ingiliscəsi nədir?", o: ["Pear", "Apple", "Grape"], a: 1 },
+            { q: "She ___ to school every day.", o: ["go", "going", "goes"], a: 2 },
+            { q: "Hansı rəngdir: 'Yellow'?", o: ["Qırmızı", "Sarı", "Yaşıl"], a: 1 },
+            { q: "This is my book. Give it to ___.", o: ["I", "my", "me"], a: 2 },
+            { q: "My brother ___ a new car.", o: ["have", "has", "is"], a: 1 },
+            { q: "Zidd mənalı sözü tap: 'Big'", o: ["Large", "Huge", "Small"], a: 2 },
+            { q: "___ you speak English?", o: ["Do", "Are", "Is"], a: 0 },
+            { q: "Cat is a ___.", o: ["Bird", "Animal", "Fish"], a: 1 },
+            { q: "They ___ football now.", o: ["play", "are playing", "plays"], a: 1 }
         ],
-        // Level 1: Orta
+        // Level 1: Intermediate (Mixed)
         [
-            { q: "I ___ here for 5 years.", o: ["live", "have lived", "lived"], a: 1 },
-            { q: "If I ___ you, I would go.", o: ["was", "were", "am"], a: 1 },
-            { q: "She went to school, ___ she?", o: ["didn't", "doesn't", "isn't"], a: 0 },
-            { q: "This car is ___ than that one.", o: ["expensive", "more expensive", "expensiver"], a: 1 },
-            { q: "I look forward to ___ you.", o: ["see", "seeing", "saw"], a: 1 },
-            { q: "The book ___ by Shakespeare.", o: ["wrote", "was written", "written"], a: 1 },
-            { q: "He stopped ___ cigarettes.", o: ["smoke", "to smoking", "smoking"], a: 2 },
-            { q: "I prefer tea ___ coffee.", o: ["than", "to", "from"], a: 1 },
-            { q: "Unless you ___, you will fail.", o: ["study", "don't study", "will study"], a: 0 },
-            { q: "I wish I ___ a car.", o: ["have", "had", "has"], a: 1 }
+            { q: "I have lived here ___ 2010.", o: ["for", "since", "ago"], a: 1 },
+            { q: "'Success' sözünün mənası nədir?", o: ["Uğur", "Təhlükə", "Səbir"], a: 0 },
+            { q: "If I ___ you, I would study harder.", o: ["was", "were", "am"], a: 1 },
+            { q: "She looks forward to ___ you.", o: ["seeing", "see", "saw"], a: 0 },
+            { q: "Hansı söz 'Səyahət' deməkdir?", o: ["Traffic", "Travel", "Trouble"], a: 1 },
+            { q: "The letter ___ by John yesterday.", o: ["wrote", "was written", "written"], a: 1 },
+            { q: "I am interested ___ learning music.", o: ["on", "at", "in"], a: 2 },
+            { q: "'Borrow' sözünün əksi hansıdır?", o: ["Lend", "Take", "Get"], a: 0 },
+            { q: "You ___ smoke here. It's forbidden.", o: ["don't have to", "mustn't", "shouldn't"], a: 1 },
+            { q: "He drives very ___.", o: ["careful", "carefully", "care"], a: 1 }
         ],
-        // Level 2: Çətin
+        // Level 2: Advanced (Mixed)
         [
-            { q: "No sooner ___ arrived than it rained.", o: ["I had", "had I", "did I"], a: 1 },
-            { q: "It's high time we ___ home.", o: ["go", "went", "have gone"], a: 1 },
-            { q: "She denied ___ the vase.", o: ["breaking", "to break", "break"], a: 0 },
-            { q: "Had I known, I ___ you.", o: ["would help", "would have helped", "helped"], a: 1 },
-            { q: "The man ___ car was stolen is here.", o: ["who", "which", "whose"], a: 2 },
-            { q: "Seldom ___ such beauty.", o: ["I have seen", "have I seen", "seen I have"], a: 1 },
-            { q: "I'd rather you ___ now.", o: ["leave", "left", "leaving"], a: 1 },
-            { q: "By next year, I ___ here for a decade.", o: ["will live", "will have lived", "am living"], a: 1 },
-            { q: "Despite ___ tired, he kept working.", o: ["he was", "of being", "being"], a: 2 },
-            { q: "Not only ___ late, but he was rude.", o: ["was he", "he was", "is he"], a: 0 }
+            { q: "I'd rather you ___ home now.", o: ["go", "went", "gone"], a: 1 },
+            { q: "Meaning of 'Procrastinate':", o: ["To delay", "To speed up", "To cancel"], a: 0 },
+            { q: "No sooner ___ arrived than it rained.", o: ["I had", "did I", "had I"], a: 2 },
+            { q: "İdiomanı tamamla: 'Piece of ___'", o: ["Bread", "Cake", "Cheese"], a: 1 },
+            { q: "She denied ___ the window.", o: ["breaking", "to break", "break"], a: 0 },
+            { q: "Sinonimi tap: 'Wealthy'", o: ["Poor", "Rich", "Healthy"], a: 1 },
+            { q: "By next year, we ___ for 10 years.", o: ["will marry", "will have been married", "are married"], a: 1 },
+            { q: "Despite ___ ill, he came to work.", o: ["being", "he was", "of being"], a: 0 },
+            { q: "It's high time we ___ a decision.", o: ["make", "made", "have made"], a: 1 },
+            { q: "'To give up' nə deməkdir?", o: ["Başlamaq", "Təslim olmaq", "Yuxarı qaldırmaq"], a: 1 }
         ]
     ];
 
     let currentLevel = 0;
     let questionIndex = 0;
-    let score = 0; // Bu versiyada sadəcə xətti irəliləyiş var
+    let score = 0;
 
-    // Ekran dəyişdirmə funksiyası
     function showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
+        document.querySelectorAll('.screen').forEach(el => {
+            el.classList.remove('active');
+            // Qısa gecikmə ilə gizlədək ki animasiya görünsün
+            setTimeout(() => {
+                if(!el.classList.contains('active')) el.style.display = 'none';
+            }, 400); 
+        });
+        
+        const target = document.getElementById(screenId);
+        target.style.display = 'block';
+        // Display block olduqdan sonra opacity-ni dəyiş
+        setTimeout(() => target.classList.add('active'), 50);
     }
 
-    // Oyunu başlatmaq
     function startGame(level) {
         currentLevel = level;
         questionIndex = 0;
+        score = 0;
+        document.getElementById('score-badge').innerText = `Xal: 0`;
+        document.getElementById('level-badge').innerText = getLevelName(level);
         showScreen('game-screen');
         loadQuestion();
     }
 
-    // Sualı yükləmək
     function loadQuestion() {
         const qData = questions[currentLevel][questionIndex];
         
-        // Progress bar mətni (Məsələn: Level 1 - 5/10)
-        document.getElementById('progress-text').textContent = 
-            `Səviyyə: ${getLevelName(currentLevel)} — Sual ${questionIndex + 1}/10`;
-        
-        document.getElementById('question-text').textContent = qData.q;
+        // Progress Bar yenilə
+        const percent = ((questionIndex) / 10) * 100;
+        document.getElementById('progress-bar').style.width = `${percent}%`;
+
+        // Mətnləri yüklə
+        const qText = document.getElementById('question-text');
+        qText.style.opacity = 0;
+        setTimeout(() => {
+            qText.textContent = qData.q;
+            qText.style.opacity = 1;
+        }, 200);
         
         const optionsDiv = document.getElementById('options-container');
-        optionsDiv.innerHTML = ''; // Köhnə variantları təmizlə
+        optionsDiv.innerHTML = ''; 
 
         qData.o.forEach((opt, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'option';
-            btn.textContent = opt;
-            btn.onclick = () => checkAnswer(index, qData.a, btn);
-            optionsDiv.appendChild(btn);
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerHTML = `${opt} <span class="status-icon"></span>`;
+            div.onclick = () => checkAnswer(index, qData.a, div);
+            
+            // Animasiya ilə gəliş
+            div.style.animation = `fadeIn 0.5s ease ${index * 0.1}s backwards`;
+            optionsDiv.appendChild(div);
         });
     }
 
-    // Cavabı yoxlamaq
-    function checkAnswer(selected, correct, btnElement) {
-        // Düymələri deaktiv et ki, təkrar basılmasın
-        const allBtns = document.querySelectorAll('.option');
-        allBtns.forEach(b => b.disabled = true);
+    function checkAnswer(selected, correct, element) {
+        // Bütün düymələri kilidlə
+        const allOptions = document.querySelectorAll('.option');
+        allOptions.forEach(opt => opt.classList.add('disabled'));
+
+        const icon = element.querySelector('.status-icon');
 
         if (selected === correct) {
-            btnElement.classList.add('correct');
-            // 1 saniyə sonra növbəti suala keç
-            setTimeout(() => {
-                nextQuestion();
-            }, 1000);
+            element.classList.add('correct');
+            icon.innerText = '✅';
+            score++;
+            document.getElementById('score-badge').innerText = `Xal: ${score}`;
         } else {
-            btnElement.classList.add('wrong');
-            // Səhv olanda düzgün cavabı da göstər (istəyə bağlı)
-            allBtns[correct].classList.add('correct');
+            element.classList.add('wrong');
+            icon.innerText = '❌';
             
-            // Yenə də növbəti suala keçir (və ya burda "game over" qoya bilərsən)
-            setTimeout(() => {
-                nextQuestion();
-            }, 1500);
+            // Düzgün cavabı göstər
+            const correctEl = allOptions[correct];
+            correctEl.classList.add('correct');
+            correctEl.querySelector('.status-icon').innerText = '✅';
         }
+
+        // Progress bar tamamlansın (vizual olaraq sual bitdi)
+        const percent = ((questionIndex + 1) / 10) * 100;
+        document.getElementById('progress-bar').style.width = `${percent}%`;
+
+        setTimeout(() => {
+            nextQuestion();
+        }, 1500);
     }
 
-    // Növbəti sual məntiqi
     function nextQuestion() {
         questionIndex++;
-        
         if (questionIndex < 10) {
             loadQuestion();
         } else {
@@ -263,38 +443,65 @@
         }
     }
 
-    // Səviyyə bitdikdə
     function finishLevel() {
         showScreen('result-screen');
         const nextBtn = document.getElementById('next-level-btn');
+        const title = document.getElementById('result-title');
         const msg = document.getElementById('result-msg');
+        const scoreEl = document.getElementById('final-score');
 
-        if (currentLevel < 2) {
-            msg.textContent = `${getLevelName(currentLevel)} səviyyəsini bitirdiniz! Növbəti səviyyəyə hazırsınız?`;
-            nextBtn.style.display = 'inline-block';
-            nextBtn.textContent = "Növbəti Səviyyəyə Keç";
-            nextBtn.onclick = () => startGame(currentLevel + 1);
+        scoreEl.textContent = `${score}/10`;
+
+        if (score >= 7) {
+            scoreEl.style.borderColor = "var(--success)";
+            scoreEl.style.color = "var(--success)";
+            title.textContent = "Təbriklər! 🎉";
+            title.style.color = "var(--success)";
+            
+            if (currentLevel < 2) {
+                msg.textContent = `${getLevelName(currentLevel)} səviyyəsini uğurla keçdiniz!`;
+                nextBtn.style.display = 'inline-block';
+            } else {
+                msg.textContent = "Siz EngPlay ustasısınız! Bütün səviyyələr bitdi.";
+                nextBtn.style.display = 'none';
+            }
         } else {
-            msg.textContent = "Təbriklər! Siz bütün səviyyələri uğurla başa vurdunuz!";
-            nextBtn.style.display = 'none'; // Daha level yoxdur
+            scoreEl.style.borderColor = "var(--danger)";
+            scoreEl.style.color = "var(--danger)";
+            title.textContent = "Bir daha cəhd et 😔";
+            title.style.color = "var(--danger)";
+            msg.textContent = "Növbəti səviyyəyə keçmək üçün ən azı 7 sualı düzgün yazmalısınız.";
+            
+            // "Yenidən oyna" funksiyasına çevir
+            nextBtn.style.display = 'inline-block';
+            nextBtn.textContent = "Yenidən Cəhd Et";
+            nextBtn.onclick = () => startGame(currentLevel);
+            return;
         }
+
+        // Əgər keçibsə və növbəti level varsa
+        nextBtn.textContent = "Növbəti Səviyyə";
+        nextBtn.onclick = () => nextLevel();
     }
 
-    // Növbəti level funksiyası (Result ekranından çağırılır)
     function nextLevel() {
         if(currentLevel < 2) {
             startGame(currentLevel + 1);
         }
     }
 
-    // Yardımçı: Səviyyə adını qaytarır
     function getLevelName(idx) {
-        if(idx === 0) return "Asan";
-        if(idx === 1) return "Orta";
-        if(idx === 2) return "Çətin";
-        return "";
+        const names = ["Beginner", "Intermediate", "Advanced"];
+        return names[idx];
     }
 </script>
+
+<style>
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
 
 </body>
 </html>
